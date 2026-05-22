@@ -19,7 +19,7 @@ pipeline {
             steps {
                 echo 'Ejecutando pruebas unitarias...'
                 // Ejecuta los tests que creamos antes
-                bat 'python -m unittest test_app.py'
+                bat 'py -m unittest test_app.py'
             }
         }
         
