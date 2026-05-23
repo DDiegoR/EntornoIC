@@ -42,12 +42,12 @@ pipeline {
         success {
             echo '¡El pipeline terminó con éxito!'
             // Notificación de éxito a Discord
-            bat 'curl -H "Content-Type: application/json" -X POST -d "{\\"content\\": \\"✅ **¡Éxito!** El pipeline de pruebas pasó correctamente en Jenkins.\\"}" %DISCORD_WEBHOOK%'
+            bat 'curl -H "Content-Type: application/json" -X POST -d "{\\"content\\": \\" **¡Exito!** El pipeline de pruebas paso correctamente en Jenkins.\\"}" %DISCORD_WEBHOOK%'
         }
         failure {
             echo '¡Hubo un error en el pipeline!'
             // Notificación de error a Discord
-            bat 'curl -H "Content-Type: application/json" -X POST -d "{\\"content\\": \\"❌ **¡Error!** El pipeline falló. Alguien rompió el código.\\"}" %DISCORD_WEBHOOK%'
+            bat 'curl -H "Content-Type: application/json" -X POST -d "{\\"content\\": \\" **¡Error!** El pipeline fallo. Alguien rompio el codigo.\\"}" %DISCORD_WEBHOOK%'
         }
     }
 }
