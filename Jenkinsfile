@@ -2,6 +2,12 @@ pipeline {
     // 1. Agente
     agent any 
 
+    // 1. Declaramos las variables de entorno
+    environment {
+        // Le decimos a Jenkins que busque la credencial con ID 'discord-webhook-url'
+        DISCORD_WEBHOOK = credentials('discord-webhook-url')
+    }
+
     // 2. Etapas
     stages {
         
@@ -31,15 +37,17 @@ pipeline {
         }
     }
     
-    // 5. Post-acciones (Discord) - Para más adelante
+        // 5. Post-acciones (Discord)
     post {
         success {
             echo '¡El pipeline terminó con éxito!'
-            // Aquí iría la notificación de éxito a Discord
+            // Notificación de éxito a Discord
+            bat 'curl -H "Content-Type: application/json" -X POST -d "{\\"content\\": \\"✅ **¡Éxito!** El pipeline de pruebas pasó correctamente en Jenkins.\\"}" %DISCORD_WEBHOOK%'
         }
         failure {
             echo '¡Hubo un error en el pipeline!'
-            // Aquí iría la alerta de fallo a Discord
+            // Notificación de error a Discord
+            bat 'curl -H "Content-Type: application/json" -X POST -d "{\\"content\\": \\"❌ **¡Error!** El pipeline falló. Alguien rompió el código.\\"}" %DISCORD_WEBHOOK%'
         }
     }
 }
