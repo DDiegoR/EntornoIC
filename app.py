@@ -1,5 +1,5 @@
 def hello_world():
-    return "Hola Mundo"
+    return "Hello Cotto"
 
 def add(a, b):
     return a + b
