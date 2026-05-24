@@ -1,9 +1,7 @@
 name: Pipeline-IC-Actions
 
 # 1. Cuándo se ejecuta (Trigger)
-on:
-  push:
-    branches: [ "main" ]
+on: [push]
 
 # 2. Qué hace (Jobs)
 jobs:
@@ -32,7 +30,7 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d '{"content": "¡Exito! El pipeline paso correctamente en GitHub Actions."}' \
+          -d '{"content": "${{github.actor}}¡Exito! El pipeline paso correctamente en GitHub Actions."}' \
           ${{ secrets.DISCORD_WEBHOOK }}
 
       # Paso 5: Notificación de Error a Discord
@@ -41,5 +39,5 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d '{"content": "¡Error! El pipeline fallo en GitHub Actions. Alguien rompio el codigo."}' \
+          -d '{"content": "${{github.actor}}¡Error! El pipeline fallo en GitHub Actions. Alguien rompio el codigo."}' \
           ${{ secrets.DISCORD_WEBHOOK }}
