@@ -1,18 +1,45 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: Pipeline-IC-Actions
+
+# 1. Cuándo se ejecuta (Trigger)
+on:
+  push:
+    branches: [ "main" ]
+
+# 2. Qué hace (Jobs)
 jobs:
-  Explore-GitHub-Actions:
+  build-and-test:
+    # 3. El equivalente a 'agent any' (usa una máquina Linux en la nube)
     runs-on: ubuntu-latest
+
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v6
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
+      # Paso 1: "Clonar" tu repositorio en la máquina virtual
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      # Paso 2: Instalar Python en la máquina virtual
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11' # Podés poner la versión que uses
+
+      # Paso 3: Ejecutar los tests (igual que en Jenkins, pero con 'run' en vez de 'bat')
+      - name: Ejecutar pruebas unitarias
+        run: python -m unittest test_app.py
+
+      # Paso 4: Notificación de Éxito a Discord
+      - name: Notificar éxito a Discord
+        if: success() # Solo se ejecuta si el paso anterior (los tests) salió bien
         run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{"content": "¡Exito! El pipeline paso correctamente en GitHub Actions."}' \
+          ${{ secrets.DISCORD_WEBHOOK }}
+
+      # Paso 5: Notificación de Error a Discord
+      - name: Notificar error a Discord
+        if: failure() # Solo se ejecuta si los tests fallaron
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{"content": "¡Error! El pipeline fallo en GitHub Actions. Alguien rompio el codigo."}' \
+          ${{ secrets.DISCORD_WEBHOOK }}
