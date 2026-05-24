@@ -20,6 +20,9 @@ jobs:
         with:
           python-version: '3.11' # Podés poner la versión que uses
 
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+        
       # Paso 3: Ejecutar los tests (igual que en Jenkins, pero con 'run' en vez de 'bat')
       - name: Ejecutar pruebas unitarias
         run: python -m unittest test_app.py
@@ -30,7 +33,7 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d '{"content": "${{github.actor}}¡Exito! El pipeline paso correctamente en GitHub Actions."}' \
+          -d '{"content": "${{github.actor}} ¡Exito! El pipeline paso correctamente en GitHub Actions."}' \
           ${{ secrets.DISCORD_WEBHOOK }}
 
       # Paso 5: Notificación de Error a Discord
@@ -39,5 +42,5 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d '{"content": "${{github.actor}}¡Error! El pipeline fallo en GitHub Actions. Alguien rompio el codigo."}' \
+          -d '{"content": "${{github.actor}} ¡Error! El pipeline fallo en GitHub Actions. Alguien rompio el codigo."}' \
           ${{ secrets.DISCORD_WEBHOOK }}

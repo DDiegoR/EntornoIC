@@ -1,7 +1,18 @@
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
 def hello_world():
-    return "Hola Mundo"
+    return "<h1>Hola Mundo</h1><p>Entorno de Integracion Continua Funcional</p>"
 
+@app.route("/add/<a>/<b>")
 def add(a, b):
-    return a + b
+    try:
+        resultado = float(a) + float(b)
+        return f"El resultado de {a} + {b} es: {resultado}"
+    except ValueError:
+        return "Error: Por favor ingrese numeros validos"
 
-#probando hook
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
