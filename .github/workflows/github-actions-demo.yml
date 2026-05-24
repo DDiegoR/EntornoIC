@@ -22,7 +22,7 @@ jobs:
 
       - name: Instalar dependencias
         run: pip install -r requirements.txt
-        
+
       # Paso 3: Ejecutar los tests (igual que en Jenkins, pero con 'run' en vez de 'bat')
       - name: Ejecutar pruebas unitarias
         run: python -m unittest test_app.py
@@ -36,7 +36,7 @@ jobs:
           -d '{"content": "${{github.actor}} ¡Exito! El pipeline paso correctamente en GitHub Actions."}' \
           ${{ secrets.DISCORD_WEBHOOK }}
 
-      # Paso 5: Notificación de Error a Discord
+      # Paso 4: Notificación de Error a Discord
       - name: Notificar error a Discord
         if: failure() # Solo se ejecuta si los tests fallaron
         run: |
@@ -44,3 +44,9 @@ jobs:
           -X POST \
           -d '{"content": "${{github.actor}} ¡Error! El pipeline fallo en GitHub Actions. Alguien rompio el codigo."}' \
           ${{ secrets.DISCORD_WEBHOOK }}
+    
+      # Paso 5: Desplegar en Render (Solo si hubo éxito)
+      - name: Desplegar en Render
+        if: success()
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
