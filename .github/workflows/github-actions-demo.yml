@@ -61,7 +61,7 @@ jobs:
           # Buscamos el patron trello/TRELLO- (ignorando mayusculas/minusculas con la bandera -i)
           # y extraemos solamente la parte alfanumerica que sigue despues del guion.
           # Usamos "|| true" para evitar que el comando falle si no encuentra coincidencias.
-          CARD_ID=$(echo "$COMMIT_MSG" | grep -oPi 'trello/trello-\K[a-z0-9]+' || true)
+          CARD_ID=$(echo "$COMMIT_MSG" | grep -oPi 'trello-\K[a-z0-9]+' || true)
           
           echo "Se encontro el ID de Trello: $CARD_ID"
           
@@ -70,13 +70,6 @@ jobs:
 
       # Paso 8: Actualizar tarjeta en Trello
       - name: Mover tarjeta de Trello a "Terminado"
-        # Esta condicion verifica que las pruebas pasaron Y que se encontro un ID de Trello en el commit
         if: success() && env.TRELLO_CARD_ID != ''
-        uses: dmitriy-kasyanov/trello-card-action@v1
-        with:
-          trello-api-key: ${{ secrets.TRELLO_API_KEY }}
-          trello-auth-token: ${{ secrets.TRELLO_TOKEN }}
-          # Usamos el ID extraido dinamicamente
-          trello-card-id: ${{ env.TRELLO_CARD_ID }}
-          # Recordá crear este secreto en GitHub con el ID de la lista donde aterrizarán las tarjetas
-          trello-list-id: ${{ secrets.TRELLO_LIST_ID }}
+        run: |
+          curl -X PUT "https://api.trello.com/1/cards/${{ env.TRELLO_CARD_ID }}?idList=${{ secrets.TRELLO_LIST_ID }}&key=${{ secrets.TRELLO_API_KEY }}&token=${{ secrets.TRELLO_TOKEN }}"
