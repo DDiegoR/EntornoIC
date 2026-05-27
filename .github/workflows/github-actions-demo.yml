@@ -36,7 +36,7 @@ jobs:
           -d '{"content": "${{github.actor}} ¡Exito! El pipeline paso correctamente en GitHub Actions."}' \
           ${{ secrets.DISCORD_WEBHOOK }}
 
-      # Paso 4: Notificación de Error a Discord
+      # Paso 5: Notificación de Error a Discord
       - name: Notificar error a Discord
         if: failure() # Solo se ejecuta si los tests fallaron
         run: |
@@ -45,8 +45,38 @@ jobs:
           -d '{"content": "${{github.actor}} ¡Error! El pipeline fallo en GitHub Actions. Alguien rompio el codigo."}' \
           ${{ secrets.DISCORD_WEBHOOK }}
     
-      # Paso 5: Desplegar en Render (Solo si hubo éxito)
+      # Paso 6: Desplegar en Render (Solo si hubo éxito)
       - name: Desplegar en Render
         if: success()
         run: |
           curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+      # Paso 7: Extraer ID de Trello del mensaje del commit
+      - name: Extraer ID de Trello
+        id: extract_trello
+        run: |
+          # Obtenemos el mensaje completo del commit
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          
+          # Buscamos el patron trello/TRELLO- (ignorando mayusculas/minusculas con la bandera -i)
+          # y extraemos solamente la parte alfanumerica que sigue despues del guion.
+          # Usamos "|| true" para evitar que el comando falle si no encuentra coincidencias.
+          CARD_ID=$(echo "$COMMIT_MSG" | grep -oPi 'trello/trello-\K[a-z0-9]+' || true)
+          
+          echo "Se encontro el ID de Trello: $CARD_ID"
+          
+          # Guardamos el ID en una variable de entorno de GitHub para poder usarlo en el siguiente paso
+          echo "TRELLO_CARD_ID=$CARD_ID" >> $GITHUB_ENV
+
+      # Paso 8: Actualizar tarjeta en Trello
+      - name: Mover tarjeta de Trello a "Terminado"
+        # Esta condicion verifica que las pruebas pasaron Y que se encontro un ID de Trello en el commit
+        if: success() && env.TRELLO_CARD_ID != ''
+        uses: dmitriy-kasyanov/trello-card-action@v1
+        with:
+          trello-api-key: ${{ secrets.TRELLO_API_KEY }}
+          trello-auth-token: ${{ secrets.TRELLO_TOKEN }}
+          # Usamos el ID extraido dinamicamente
+          trello-card-id: ${{ env.TRELLO_CARD_ID }}
+          # Recordá crear este secreto en GitHub con el ID de la lista donde aterrizarán las tarjetas
+          trello-list-id: ${{ secrets.TRELLO_LIST_ID }}
