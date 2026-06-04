@@ -12,8 +12,8 @@ class TestApp(unittest.TestCase):
         response = self.app.get('/')
         # Verificamos que responda con 200 OK
         self.assertEqual(response.status_code, 200)
-        # Verificamos que el texto 'Hola Mundo' este en la respuesta
-        self.assertIn(b"Hola Mundo", response.data)
+        # Verificamos que el texto 'Entorno CI' este en la respuesta
+        self.assertIn(b"Entorno CI", response.data)
 
     def test_add(self):
         # Hacemos una peticion a la ruta de suma
