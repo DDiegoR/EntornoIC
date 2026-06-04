@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return "<h1>Entorno de Integracion Continua a la espera</h1><p>Entorno de Integracion Continua Funcional</p>"
+    return "<h1>Entorno CI a la espera</h1><p>Entorno de Integracion Continua Funcional</p>"
 
 @app.route("/add/<a>/<b>")
 def add(a, b):
