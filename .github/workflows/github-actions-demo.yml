@@ -27,6 +27,10 @@ jobs:
       - name: Ejecutar pruebas unitarias
         run: python -m unittest test_app.py
 
+      # Paso 3.5: Ejecutar las pruebas BDD (Spec Driven Development)
+      - name: Ejecutar pruebas de comportamiento (BDD)
+        run: behave
+
       # Paso 4: Notificación de Éxito a Discord
       - name: Notificar éxito a Discord
         if: success() # Solo se ejecuta si el paso anterior (los tests) salió bien
