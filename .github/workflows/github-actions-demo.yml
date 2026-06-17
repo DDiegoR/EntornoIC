@@ -50,7 +50,7 @@ jobs:
       - name: Extraer ID y Actualizar Trello
         run: |
           COMMIT_MSG="${{ github.event.head_commit.message }}"
-          CARD_ID=$(echo "$COMMIT_MSG" | grep -oPi 'trello/trello-\K[a-z0-9]+' || true)
+          CARD_ID=$(echo "$COMMIT_MSG" | grep -oPi 'trello-\K[a-z0-9]+' || true)
           echo "Se encontro el ID de Trello: $CARD_ID"
           
           if [ ! -z "$CARD_ID" ]; then
