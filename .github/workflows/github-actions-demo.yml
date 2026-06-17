@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Descargar código
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # SonarCloud necesita el historial completo para funcionar bien
 
       - name: Configurar Python
         uses: actions/setup-python@v5
@@ -25,6 +27,12 @@ jobs:
 
       - name: Ejecutar pruebas de comportamiento (BDD)
         run: behave
+
+      - name: Análisis de Código estático (SonarCloud)
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   # ==========================================
   # JOB 2: DESPLIEGUE EN RENDER
