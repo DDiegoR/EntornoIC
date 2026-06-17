@@ -22,8 +22,10 @@ jobs:
       - name: Instalar dependencias
         run: pip install -r requirements.txt
 
-      - name: Ejecutar pruebas unitarias
-        run: python -m unittest test_app.py
+      - name: Ejecutar pruebas unitarias y medir cobertura
+        run: |
+          coverage run -m unittest test_app.py
+          coverage xml
 
       - name: Ejecutar pruebas de comportamiento (BDD)
         run: behave
