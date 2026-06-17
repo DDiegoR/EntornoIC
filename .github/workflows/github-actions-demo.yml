@@ -81,5 +81,5 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d '{"content": "${{github.actor}} ¡Error! El pipeline fallo en GitHub Actions. Alguien rompio el codigo."}' \
+          -d '{"content": "${{github.actor}} ¡Error! El pipeline fallo en GitHub Actions. No pasaron los test!"}' \
           ${{ secrets.DISCORD_WEBHOOK }}
