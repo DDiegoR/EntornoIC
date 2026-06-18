@@ -9,8 +9,8 @@ def hello_world():
 @app.route("/add/<a>/<b>")
 def add(a, b):
     try:
-        resultado = float(a) + float(b)
-        return f"El resultado de {a} + {b} es: {resultado}"
+        resultado = float(a) - float(b)
+        return f"El resultado de {a} - {b} es: {resultado}"
     except ValueError:
         return "Error: Por favor ingrese numeros validos"
 
